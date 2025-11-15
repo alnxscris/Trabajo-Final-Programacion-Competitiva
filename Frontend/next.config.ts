@@ -1,7 +1,11 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    turbopackUseSystemTlsCerts: true,  // Arregla error TLS
+  },
+  fonts: {
+    optimizeFonts: false,     // Desactiva sistema interno de fuentes
+  }
 };
 
-export default nextConfig;
+module.exports = nextConfig;

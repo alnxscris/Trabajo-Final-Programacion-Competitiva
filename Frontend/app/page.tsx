@@ -7,9 +7,38 @@ import React from "react";
 export default function LoginPage() {
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // ============================================================
+  //  handleSubmit()
+  //  Envía email y password al backend:
+  //    POST /auth/login
+  //  Si es correcto -> guarda token y redirige a /cargar-archivo
+  // ============================================================
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Aquí luego llamarás al backend con fetch/axios para autenticar
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error);
+      return;
+    }
+
+    // Guardar token para futuras peticiones
+    localStorage.setItem("token", data.token);
+
     router.push("/cargar-archivo");
   };
 
@@ -42,12 +71,14 @@ export default function LoginPage() {
           className="mt-12 space-y-5 max-w-2xl mx-auto"
         >
           <input
+            name="email"
             type="text"
-            placeholder="Usuario/Correo Electrónico"
+            placeholder="Usuario / Correo Electrónico"
             className="w-full rounded-md border border-indigo-300 px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
 
           <input
+            name="password"
             type="password"
             placeholder="Contraseña"
             className="w-full rounded-md border border-indigo-300 px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -68,7 +99,7 @@ export default function LoginPage() {
             href="/registro"
             className="text-indigo-600 font-semibold hover:underline"
           >
-            Registrate
+            Regístrate
           </a>
         </p>
       </div>

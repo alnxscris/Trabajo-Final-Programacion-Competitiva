@@ -1,28 +1,73 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function HistorialPage() {
+  const router = useRouter();
+  const [historial, setHistorial] = useState<any[]>([]);
+
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    router.push("/");
+    return;
+  }
+
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/historial`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      // SI ES ARRAY → OK
+      if (Array.isArray(data)) {
+        setHistorial(data);
+        return;
+      }
+
+      // SI VIENE ENVUELTO (por si acaso)
+      if (Array.isArray(data.historial)) {
+        setHistorial(data.historial);
+        return;
+      }
+
+      // SI VIENE ERROR → EVITA QUE ROMPA EL MAP
+      setHistorial([]);
+    })
+    .catch(() => setHistorial([]));
+}, []);
+
+  // Cerrar sesión
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* BARRA SUPERIOR */}
       <header className="border-b border-slate-200">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
+          
+          {/* Menú */}
           <nav className="flex items-center gap-8 text-sm font-medium">
-            <a href="/" className="text-slate-900 hover:text-indigo-500">
-              Inicio
-            </a>
-            <a
-              href="/cargar-archivo"
-              className="text-slate-900 hover:text-indigo-500"
-            >
+            <a href="/cargar-archivo" className="text-slate-900 hover:text-indigo-500">
               Cargar Archivo
             </a>
+
             <a
               href="/historial"
               className="text-indigo-500 border-b-2 border-indigo-500 pb-1"
             >
               Historial
             </a>
-            <button className="text-slate-900 hover:text-red-500">
+
+            <button
+              onClick={handleLogout}
+              className="text-slate-900 hover:text-red-500 transition"
+            >
               Salir
             </button>
           </nav>
@@ -37,7 +82,7 @@ export default function HistorialPage() {
           />
         </div>
 
-        {/* Línea morada debajo del menú */}
+        {/* Línea morada */}
         <div className="h-[2px] bg-indigo-400" />
       </header>
 
@@ -47,47 +92,49 @@ export default function HistorialPage() {
           Historial de Búsquedas
         </h1>
 
-        {/* Filtro por fecha */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <input
-              type="text"
-              placeholder="Filtrar por fecha"
-              className="w-full rounded-md border border-indigo-300 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pr-10"
-              readOnly
-            />
-            <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-              <span className="text-indigo-500 text-lg">▾</span>
-            </div>
-          </div>
-        </div>
-
-        {/* TABLA VACÍA */}
+        {/* TABLA DE HISTORIAL */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm border border-indigo-200 rounded-md overflow-hidden">
             <thead className="bg-indigo-50">
               <tr className="text-left">
                 <th className="px-4 py-2 border-b border-indigo-200">Fecha</th>
-                <th className="px-4 py-2 border-b border-indigo-200">
-                  Patrón buscado
-                </th>
-                <th className="px-4 py-2 border-b border-indigo-200">
-                  Archivo Procesado
-                </th>
+                <th className="px-4 py-2 border-b border-indigo-200">Patrón buscado</th>
+                <th className="px-4 py-2 border-b border-indigo-200">Archivo Procesado</th>
                 <th className="px-4 py-2 border-b border-indigo-200 text-center">
                   Ver detalle
                 </th>
               </tr>
             </thead>
+
             <tbody>
-              <tr>
-                <td
-                  colSpan={4}
-                  className="text-center py-6 text-slate-500 italic"
-                >
-                  No hay registros disponibles
-                </td>
-              </tr>
+              {historial.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="text-center py-6 text-slate-500 italic"
+                  >
+                    No hay registros disponibles
+                  </td>
+                </tr>
+              ) : (
+                historial.map((h: any) => (
+                  <tr key={h.id}>
+                    <td className="px-4 py-2 border-b">{h.fecha}</td>
+                    <td className="px-4 py-2 border-b">{h.patron}</td>
+                    <td className="px-4 py-2 border-b">{h.archivo}</td>
+
+                    {/*  BOTÓN FUNCIONAL PARA VER DETALLE */}
+                    <td className="px-4 py-2 border-b text-center">
+                      <a
+                        href={`/historial/${h.id}`}
+                        className="text-indigo-600 hover:underline font-semibold cursor-pointer"
+                      >
+                        Ver detalle
+                      </a>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
