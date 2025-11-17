@@ -7,7 +7,7 @@ import Image from "next/image";
 export default function HistorialDetallePage() {
   const router = useRouter();
 
-  // 🔥 ESTA ES LA FORMA CORRECTA EN NEXT 13+
+  //  ESTA ES LA FORMA CORRECTA EN NEXT 13+
   const params = useParams();
   const id = params.id as string;
 
@@ -50,7 +50,7 @@ export default function HistorialDetallePage() {
       });
   }, [id]);
 
-  // ⏳ LOADING
+  //  LOADING
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-xl">
@@ -59,7 +59,7 @@ export default function HistorialDetallePage() {
     );
   }
 
-  // ❌ ERROR
+  //  ERROR
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
@@ -76,7 +76,7 @@ export default function HistorialDetallePage() {
     );
   }
 
-  // ✅ OK — MOSTRAR DETALLE
+  //  OK — MOSTRAR DETALLE
   return (
     <div className="min-h-screen bg-white">
       {/* BARRA SUPERIOR */}
