@@ -1,6 +1,36 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+/**
+ * Archivo: KMP.cpp
+ * Módulo: Dominio Algorítmico (C++)
+ *
+ * Propósito:
+ *  Implementa el algoritmo Knuth-Morris-Pratt (KMP) para búsqueda de patrones dentro
+ *  de secuencias de ADN. Este módulo constituye la lógica central del análisis del sistema.
+ *
+ * Estructura del archivo:
+ *  1. Función buildLPS:
+ *      Construye la tabla LPS necesaria para KMP, optimizando el retroceso de índices.
+ *
+ *  2. Función MetodoKMP:
+ *      Aplica el algoritmo KMP sobre una cadena T buscando el patrón P.
+ *      Devuelve un vector de posiciones donde se encuentran coincidencias.
+ *
+ *  3. Función main:
+ *      - Recibe como entrada un string con formato:
+ *            "PATRON|SECUENCIA1|SECUENCIA2|..."
+ *      - Separa los elementos usando '|'.
+ *      - Para cada secuencia ejecuta MetodoKMP.
+ *      - Imprime posiciones separadas por ';' y cada secuencia por '|'.
+ *
+ * Rol dentro del sistema:
+ *  - Es el núcleo de lógica algorítmica del backend.
+ *  - Es invocado por el servidor mediante ejecución de proceso.
+ *  - Devuelve resultados en texto plano que luego son convertidos a JSON.
+ */
+
+
 vector<int> buildLPS(const string& P) {
     int m = P.size();
     vector<int> lps(m, 0);

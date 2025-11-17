@@ -7,12 +7,28 @@ import React from "react";
 export default function LoginPage() {
   const router = useRouter();
 
-  // ============================================================
-  //  handleSubmit()
-  //  Envía email y password al backend:
-  //    POST /auth/login
-  //  Si es correcto -> guarda token y redirige a /cargar-archivo
-  // ============================================================
+  /**
+ * Archivo: app/page.tsx
+ * Componente: LoginPage
+ *
+ * Descripción general:
+ *  Esta pantalla representa el inicio de sesión del sistema de identificación de secuencias de ADN.
+ *  Permite al usuario ingresar sus credenciales y obtener un token JWT desde el backend.
+ *  Después de autenticarse correctamente, redirige al usuario a la página de carga de archivo.
+ *
+ * Funcionalidades principales:
+ *  - Captura de email y contraseña.
+ *  - Envío de los datos al backend mediante POST /auth/login.
+ *  - Manejo de errores de autenticación.
+ *  - Almacenamiento seguro del token en localStorage.
+ *  - Navegación automática hacia /cargar-archivo después de iniciar sesión.
+ *
+ * Roles dentro del sistema:
+ *  - Es la puerta de entrada para todos los usuarios.
+ *  - Inicia el flujo de sesión y habilita el resto de pantallas protegidas.
+ */
+
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

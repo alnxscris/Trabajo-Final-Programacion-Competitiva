@@ -4,6 +4,37 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
+/**
+ * Archivo: app/cargar-archivo/page.tsx
+ * Componente: CargarArchivoPage
+ *
+ * Descripción general:
+ *  Esta pantalla permite al usuario cargar el archivo CSV que contiene las secuencias de ADN
+ *  junto con el patrón que desea buscar. Es el núcleo operativo del sistema, ya que desde aquí
+ *  se inicia el análisis con el algoritmo KMP ejecutado en el backend.
+ *
+ * Funciones principales:
+ *  - handleFileChange:
+ *      Valida que el archivo seleccionado sea un .csv y actualiza el nombre del archivo mostrado.
+ *
+ *  - handleSubmit:
+ *      Construye un FormData con el archivo y el patrón, envía la solicitud al backend mediante
+ *      POST /search/ejecutar, maneja errores de validación y muestra un spinner durante el análisis.
+ *
+ * Flujo general:
+ *  1. Usuario selecciona el archivo CSV.
+ *  2. Usuario ingresa el patrón a buscar.
+ *  3. El componente envía la solicitud al backend con JWT.
+ *  4. El backend ejecuta el algoritmo KMP en C++.
+ *  5. La respuesta se guarda en localStorage como “resultados”.
+ *  6. Se redirige a /resultados.
+ *
+ * Rol dentro del sistema:
+ *  - Es la pantalla principal del proyecto.
+ *  - Orquesta el análisis, validaciones y comunicación directa con el backend.
+ */
+
+
 export default function CargarArchivoPage() {
   const router = useRouter();
 

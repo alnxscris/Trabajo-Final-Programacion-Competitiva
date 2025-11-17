@@ -7,15 +7,28 @@ import React from "react";
 export default function RegisterPage() {
   const router = useRouter();
 
-  // ============================================================
-  //  handleSubmit()
-  //  Envía nombre, email y contraseña al backend:
-  //  POST /auth/register
-  //  Valida contraseñas y redirige al login despues del registro
+  /**
+ * Archivo: app/registro/page.tsx
+ * Componente: RegisterPage
+ *
+ * Descripción general:
+ *  Esta pantalla permite registrar nuevos usuarios dentro del sistema.
+ *  Envía al backend los datos necesarios para crear la cuenta y valida
+ *  que las contraseñas coincidan antes de enviarlas.
+ *
+ * Funcionalidades principales:
+ *  - Captura de nombre, correo, contraseña y confirmación.
+ *  - Validación de contraseñas coincidentes.
+ *  - Envío de datos al backend mediante POST /auth/register.
+ *  - Manejo de respuestas de error del servidor.
+ *  - Redirección al login cuando el registro finaliza correctamente.
+ *
+ * Rol dentro del sistema:
+ *  - Permite la creación de cuentas para acceder al módulo de análisis de ADN.
+ *  - Garantiza un flujo de autenticación seguro para nuevos usuarios.
+ */
 
-  // Guarda nombre, email y contraseña encriptada
-  // Funciona con NEXT_PUBLIC_API_URL
-  // ============================================================
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

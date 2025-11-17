@@ -1,6 +1,21 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+/**
+ * Archivo: app/layout.tsx
+ * Componente: RootLayout
+ *
+ * Descripción:
+ *  Layout global que envuelve todas las páginas del sistema.
+ *  Define estilos base, tipografía, tema visual y metadatos.
+ *
+ * Funcionalidad:
+ *  - Aplica clases globales de Tailwind.
+ *  - Configura colores y estilos coherentes para todas las vistas.
+ *  - Renderiza dinámicamente cada página mediante {children}.
+ */
+
+
 export const metadata: Metadata = {
   title: "Sistema de Identificación de Secuencias de ADN",
   description:

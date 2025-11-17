@@ -4,6 +4,25 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 
+/**
+ * Archivo: app/historial/[id]/page.tsx
+ * Componente: HistorialDetallePage
+ *
+ * Descripción general:
+ *  Muestra el detalle completo de un registro específico del historial.
+ *  Incluye datos generales del análisis y todas las coincidencias registradas.
+ *
+ * Lógica importante:
+ *  - Obtiene el parámetro dinámico “id” mediante useParams.
+ *  - Verifica el token y solicita GET /historial/{id}.
+ *  - Maneja estados de carga, error y datos completos.
+ *
+ * Rol dentro del sistema:
+ *  - Permite examinar detalladamente los resultados previos procesados por KMP.
+ *  - Complementa el historial general ofreciendo acceso individual a cada búsqueda.
+ */
+
+
 export default function HistorialDetallePage() {
   const router = useRouter();
 

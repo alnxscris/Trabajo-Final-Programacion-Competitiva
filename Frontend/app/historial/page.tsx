@@ -4,6 +4,30 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+/**
+ * Archivo: app/historial/page.tsx
+ * Componente: HistorialPage
+ *
+ * Descripción general:
+ *  Lista todos los análisis previamente realizados por el usuario autenticado.
+ *  Solicita los datos al backend mediante GET /historial usando el token JWT. 
+ *  JWT (JSON Web Token) es un token digital firmado que se usa para verificar la identidad de un usuario,
+ *  después de iniciar sesión.
+ *
+ * Funciones principales:
+ *  - useEffect:
+ *      Verifica la existencia del token, solicita los registros y maneja errores
+ *      como token inválido o respuestas inesperadas del backend.
+ *
+ * Interfaz:
+ *  - Tabla con fechas, patrones buscados, nombre de archivo y un enlace al detalle.
+ *
+ * Rol dentro del sistema:
+ *  - Ofrece trazabilidad completa de las búsquedas del usuario.
+ *  - Permite consultar resultados pasados sin necesidad de reprocesar los archivos.
+ */
+
+
 export default function HistorialPage() {
   const router = useRouter();
   const [historial, setHistorial] = useState<any[]>([]);

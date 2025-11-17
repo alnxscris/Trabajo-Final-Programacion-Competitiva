@@ -3,6 +3,25 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
+/**
+ * Archivo: app/resultados/page.tsx
+ * Componente: ResultadosPage
+ *
+ * Descripción general:
+ *  Muestra las coincidencias encontradas por el algoritmo KMP después de procesar el CSV.
+ *  Los resultados se obtienen desde localStorage, donde fueron almacenados en la página anterior.
+ *
+ * Funcionalidades principales:
+ *  - Lectura automática de resultados desde localStorage.
+ *  - Renderizado en tabla de las secuencias y sus coincidencias.
+ *  - Función descargarCSV para exportar los resultados en un archivo CSV descargable.
+ *
+ * Rol dentro del sistema:
+ *  - Permite visualizar y descargar el resumen del análisis generado por el dominio KMP.
+ *  - Representa la fase final del proceso de búsqueda.
+ */
+
+
 // Función que genera un CSV y fuerza descarga
 function descargarCSV(datos: any[]) {
   if (!datos || datos.length === 0) {
