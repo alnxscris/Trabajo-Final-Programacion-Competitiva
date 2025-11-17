@@ -1,16 +1,22 @@
-/**
- * ============================================================
- *  search.service.js
- *  Prepara los datos de búsqueda y ejecuta el KMP
- * 
- * ✔ recorre todas las secuencias del CSV
- * ✔ ejecuta el .exe para cada una
- * ✔ devuelve un arreglo json
- * ============================================================
- */
-
 import { ejecutarKMP } from "../utils/runExecutable.js";
 
+/**
+ * Archivo: services/search.service.js
+ *
+ * Descripción general:
+ *   Contiene funciones auxiliares relacionadas al procesamiento del archivo CSV,
+ *   transformación de datos y preparación de la entrada para el algoritmo KMP.
+ *
+ * Funcionalidad:
+ *   - Parsear CSV a un arreglo de secuencias.
+ *   - Construir cadenas con formato requerido por el ejecutable C++.
+ *   - Limpiar y normalizar datos antes del análisis.
+ *
+ * Rol:
+ *   - Mantiene el controlador search limpio y modular.
+ *   - Reutiliza lógica de procesamiento en distintas partes del backend.
+ */
+ 
 export async function ejecutarBusqueda(secuencias, patron) {
     const resultados = [];
 

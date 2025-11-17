@@ -1,23 +1,34 @@
-/**
- * ============================================================
- *  
- *  Controlador encargado de:
- *    Registrar usuarios (RF14)
- *    Iniciar sesión (RF5)
- *
- *  Utiliza:
- *    - Hash de contraseñas con bcryptjs
- *    - JWT para autenticación segura
- * ============================================================
- */
-
 import pool from "../config/db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// ============================================================
-//  REGISTRO DE USUARIO   (RF14)
-// ============================================================
+/**
+ * Archivo: controllers/auth.controller.js
+ *
+ * Descripción general:
+ *   Implementa la lógica del registro e inicio de sesión de usuarios.
+ *   Es el encargado de validar información, cifrar contraseñas y generar tokens JWT.
+ *
+ * Funciones:
+ *   - registrar:
+ *        • Valida datos enviados por el frontend.
+ *        • Verifica si el email ya existe en la base de datos.
+ *        • Cifra la contraseña con bcrypt.
+ *        • Inserta un nuevo usuario en MySQL.
+ *        • Devuelve mensajes de éxito o error.
+ *
+ *   - login:
+ *        • Verifica si el email está registrado.
+ *        • Compara la contraseña cifrada con bcrypt.compare().
+ *        • Si es válido, genera un JWT firmado con datos del usuario.
+ *        • Devuelve el token al frontend para próximas solicitudes.
+ *
+ * Rol dentro del sistema:
+ *   - Es el único módulo capaz de generar tokens de autenticación.
+ *   - Controla la seguridad del sistema gestionando el acceso de usuarios.
+ */
+
+
 export async function registrar(req, res) {
     try {
         const { nombre, email, password } = req.body;

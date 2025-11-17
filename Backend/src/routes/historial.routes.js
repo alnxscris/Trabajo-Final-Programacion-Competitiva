@@ -2,6 +2,24 @@ import { Router } from "express";
 import pool from "../config/db.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 
+/**
+ * Archivo: routes/historial.routes.js
+ *
+ * Descripción general:
+ *   Rutas para consultar y obtener historial de análisis del usuario autenticado.
+ *
+ * Rutas:
+ *   - GET /historial       → historial general
+ *   - GET /historial/:id   → detalle de un análisis
+ *
+ * Seguridad:
+ *   - Ambas rutas requieren JWT.
+ *
+ * Rol:
+ *   - Permite que cada usuario consulte sus análisis previos.
+ */
+
+
 const router = Router();
 
 /**

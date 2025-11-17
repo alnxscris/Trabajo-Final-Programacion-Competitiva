@@ -1,19 +1,23 @@
-/**
- * ============================================================
- *  
- *  Configuración de conexión a MySQL usando mysql2/promise
- *
- *  Esta conexión será utilizada por:
- *    - Autenticación (login y registro) -> RF5, RF14
- *    - Módulo de historial (guardar y leer) -> RF12, RF17
- *    - Módulo de búsqueda (guardar resultados) -> RF8
- *
- *  El pool permite manejar múltiples conexiones simultáneas.
- * ============================================================
- */
-
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
+
+/**
+ * Archivo: config/db.js
+ *
+ * Descripción general:
+ *   Configura la conexión a la base de datos MySQL utilizando un pool de conexiones,
+ *   permitiendo ejecutar consultas de manera eficiente y segura.
+ *
+ * Funcionalidad:
+ *   - Crea un pool que reutiliza conexiones para mejorar el rendimiento.
+ *   - Exporta una función para realizar consultas SQL.
+ *   - Maneja errores de conexión y los muestra claramente.
+ *
+ * Rol dentro del sistema:
+ *   - Es el módulo responsable de toda la comunicación con MySQL.
+ *   - Permite almacenar usuarios, historial de análisis y resultados.
+ */
+
 
 // Cargar variables del archivo .env
 dotenv.config();
