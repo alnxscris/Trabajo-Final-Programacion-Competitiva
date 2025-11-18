@@ -82,7 +82,7 @@ export default function CargarArchivoPage() {
     formData.append("archivo", file);
     formData.append("patron", patron);
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search/ejecutar`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/search/ejecutar`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

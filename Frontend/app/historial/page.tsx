@@ -4,64 +4,41 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-/**
- * Archivo: app/historial/page.tsx
- * Componente: HistorialPage
- *
- * Descripción general:
- *  Lista todos los análisis previamente realizados por el usuario autenticado.
- *  Solicita los datos al backend mediante GET /historial usando el token JWT. 
- *  JWT (JSON Web Token) es un token digital firmado que se usa para verificar la identidad de un usuario,
- *  después de iniciar sesión.
- *
- * Funciones principales:
- *  - useEffect:
- *      Verifica la existencia del token, solicita los registros y maneja errores
- *      como token inválido o respuestas inesperadas del backend.
- *
- * Interfaz:
- *  - Tabla con fechas, patrones buscados, nombre de archivo y un enlace al detalle.
- *
- * Rol dentro del sistema:
- *  - Ofrece trazabilidad completa de las búsquedas del usuario.
- *  - Permite consultar resultados pasados sin necesidad de reprocesar los archivos.
- */
-
-
 export default function HistorialPage() {
   const router = useRouter();
   const [historial, setHistorial] = useState<any[]>([]);
+  const [filtroFecha, setFiltroFecha] = useState("");
 
-  useEffect(() => {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    router.push("/");
-    return;
+  // Función para formatear fecha GMT → Perú
+  function formatearFecha(fechaISO: string) {
+    const fecha = new Date(fechaISO);
+    return fecha.toLocaleString("es-PE", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   }
 
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/historial`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      // SI ES ARRAY → OK
-      if (Array.isArray(data)) {
-        setHistorial(data);
-        return;
-      }
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-      // SI VIENE ENVUELTO (por si acaso)
-      if (Array.isArray(data.historial)) {
-        setHistorial(data.historial);
-        return;
-      }
+    if (!token) {
+      router.push("/");
+      return;
+    }
 
-      // SI VIENE ERROR → EVITA QUE ROMPA EL MAP
-      setHistorial([]);
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/historial`, {
+      headers: { Authorization: `Bearer ${token}` },
     })
-    .catch(() => setHistorial([]));
-}, []);
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setHistorial(data);
+        else setHistorial([]);
+      })
+      .catch(() => setHistorial([]));
+  }, []);
 
   // Cerrar sesión
   const handleLogout = () => {
@@ -69,12 +46,37 @@ export default function HistorialPage() {
     router.push("/");
   };
 
+  // Eliminar 1 registro
+  const eliminarRegistro = async (id: number) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    if (!confirm("¿Seguro que quieres eliminar este registro?")) return;
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/historial/${id}`,
+      {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    if (res.ok) {
+      setHistorial((prev) => prev.filter((h) => h.id !== id));
+    }
+  };
+
+  // Filtrar por fecha seleccionada
+  const historialFiltrado = filtroFecha
+    ? historial.filter((h) => h.fecha.startsWith(filtroFecha))
+    : historial;
+
   return (
     <div className="min-h-screen bg-white">
       {/* BARRA SUPERIOR */}
       <header className="border-b border-slate-200">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
-          
+
           {/* Menú */}
           <nav className="flex items-center gap-8 text-sm font-medium">
             <a href="/cargar-archivo" className="text-slate-900 hover:text-indigo-500">
@@ -106,55 +108,90 @@ export default function HistorialPage() {
           />
         </div>
 
-        {/* Línea morada */}
         <div className="h-[2px] bg-indigo-400" />
       </header>
 
       {/* CONTENIDO PRINCIPAL */}
       <main className="max-w-5xl mx-auto px-6 py-10">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">
           Historial de Búsquedas
         </h1>
 
-        {/* TABLA DE HISTORIAL */}
+      {/* FILTRO POR FECHA */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium mb-1">
+          Filtrar por fecha:
+        </label>
+
+        <div className="relative inline-block">
+          <input
+            type="date"
+            value={filtroFecha}
+            onChange={(e) => setFiltroFecha(e.target.value)}
+            className="px-4 py-2 w-52 border rounded-lg pl-10 border-slate-300 
+                      focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
+                      text-slate-700 bg-white cursor-pointer shadow-sm"
+          />
+
+          {/* Ícono de calendario */}
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">
+            📅
+          </span>
+        </div>
+      </div>
+
+
+        {/* TABLA */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm border border-indigo-200 rounded-md overflow-hidden">
             <thead className="bg-indigo-50">
               <tr className="text-left">
                 <th className="px-4 py-2 border-b border-indigo-200">Fecha</th>
                 <th className="px-4 py-2 border-b border-indigo-200">Patrón buscado</th>
-                <th className="px-4 py-2 border-b border-indigo-200">Archivo Procesado</th>
+                <th className="px-4 py-2 border-b border-indigo-200">Archivo</th>
                 <th className="px-4 py-2 border-b border-indigo-200 text-center">
-                  Ver detalle
+                  Detalle
+                </th>
+                <th className="px-4 py-2 border-b border-indigo-200 text-center">
+                  Eliminar
                 </th>
               </tr>
             </thead>
 
             <tbody>
-              {historial.length === 0 ? (
+              {historialFiltrado.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={4}
-                    className="text-center py-6 text-slate-500 italic"
-                  >
+                  <td colSpan={5} className="text-center py-6 text-slate-500 italic">
                     No hay registros disponibles
                   </td>
                 </tr>
               ) : (
-                historial.map((h: any) => (
+                historialFiltrado.map((h) => (
                   <tr key={h.id}>
-                    <td className="px-4 py-2 border-b">{h.fecha}</td>
+                    <td className="px-4 py-2 border-b">
+                      {formatearFecha(h.fecha)}
+                    </td>
                     <td className="px-4 py-2 border-b">{h.patron}</td>
                     <td className="px-4 py-2 border-b">{h.archivo}</td>
 
-                    {/*  BOTÓN FUNCIONAL PARA VER DETALLE */}
+                    {/* Ver Detalle */}
                     <td className="px-4 py-2 border-b text-center">
                       <a
                         href={`/historial/${h.id}`}
-                        className="text-indigo-600 hover:underline font-semibold cursor-pointer"
+                        className="text-indigo-600 hover:underline font-semibold"
                       >
                         Ver detalle
                       </a>
+                    </td>
+
+                    {/* Eliminar */}
+                    <td className="px-4 py-2 border-b text-center">
+                      <button
+                        onClick={() => eliminarRegistro(h.id)}
+                        className="text-red-600 hover:underline font-semibold"
+                      >
+                        Eliminar
+                      </button>
                     </td>
                   </tr>
                 ))

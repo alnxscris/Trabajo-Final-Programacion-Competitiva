@@ -3,25 +3,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-/**
- * Archivo: app/resultados/page.tsx
- * Componente: ResultadosPage
- *
- * Descripción general:
- *  Muestra las coincidencias encontradas por el algoritmo KMP después de procesar el CSV.
- *  Los resultados se obtienen desde localStorage, donde fueron almacenados en la página anterior.
- *
- * Funcionalidades principales:
- *  - Lectura automática de resultados desde localStorage.
- *  - Renderizado en tabla de las secuencias y sus coincidencias.
- *  - Función descargarCSV para exportar los resultados en un archivo CSV descargable.
- *
- * Rol dentro del sistema:
- *  - Permite visualizar y descargar el resumen del análisis generado por el dominio KMP.
- *  - Representa la fase final del proceso de búsqueda.
- */
-
-
 // Función que genera un CSV y fuerza descarga
 function descargarCSV(datos: any[]) {
   if (!datos || datos.length === 0) {
@@ -56,7 +37,7 @@ function descargarCSV(datos: any[]) {
 export default function ResultadosPage() {
   const [resultados, setResultados] = useState<any[]>([]);
 
-   //  Cargar resultados guardados en localStorage
+  // Cargar resultados guardados en localStorage
   useEffect(() => {
     const data = localStorage.getItem("resultados");
 
@@ -89,9 +70,11 @@ export default function ResultadosPage() {
 
       {/* CONTENIDO PRINCIPAL */}
       <main className="max-w-5xl mx-auto px-6 py-10">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8">
-          Resultados de la búsqueda
-        </h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900">
+            Resultados de la búsqueda
+          </h1>
+        </div>
 
         {/* TABLA DE RESULTADOS */}
         <div className="overflow-x-auto mb-8">
@@ -129,13 +112,26 @@ export default function ResultadosPage() {
           </table>
         </div>
 
-        {/* BOTÓN DESCARGAR CSV */}
-        <button
-          onClick={() => descargarCSV(resultados)}
-          className="px-6 py-3 rounded-md bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm tracking-wide"
-        >
-          DESCARGAR RESULTADOS (CSV)
-        </button>
+        {/* CONTENEDOR DE BOTONES */}
+        <div className="flex justify-end gap-4 mt-8">
+
+          {/* DESCARGAR CSV */}
+          <button
+            onClick={() => descargarCSV(resultados)}
+            className="px-6 py-3 rounded-md bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm tracking-wide"
+          >
+            DESCARGAR RESULTADOS (CSV)
+          </button>
+
+          {/* VOLVER A CARGAR ARCHIVO */}
+          <a
+            href="/cargar-archivo"
+            className="px-6 py-3 rounded-md bg-slate-600 hover:bg-slate-700 text-white font-semibold text-sm tracking-wide flex items-center"
+          >
+            VOLVER A CARGAR ARCHIVO
+          </a>
+
+        </div>
       </main>
     </div>
   );

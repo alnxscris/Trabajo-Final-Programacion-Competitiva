@@ -2,29 +2,10 @@ import { Router } from "express";
 import pool from "../config/db.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 
-/**
- * Archivo: routes/historial.routes.js
- *
- * Descripción general:
- *   Rutas para consultar y obtener historial de análisis del usuario autenticado.
- *
- * Rutas:
- *   - GET /historial       → historial general
- *   - GET /historial/:id   → detalle de un análisis
- *
- * Seguridad:
- *   - Ambas rutas requieren JWT.
- *
- * Rol:
- *   - Permite que cada usuario consulte sus análisis previos.
- */
-
-
 const router = Router();
 
 /**
  * GET /api/historial/
- * Lista general del historial
  */
 router.get("/", authMiddleware, async (req, res) => {
   try {
@@ -48,7 +29,6 @@ router.get("/", authMiddleware, async (req, res) => {
 
 /**
  * GET /api/historial/:id
- * Detalle del historial
  */
 router.get("/:id", authMiddleware, async (req, res) => {
   try {
@@ -66,7 +46,6 @@ router.get("/:id", authMiddleware, async (req, res) => {
 
     const item = rows[0];
 
-    // Convertir el LONGTEXT (string) → Array JSON
     let resultados = [];
     try {
       resultados = JSON.parse(item.resultados);
@@ -87,6 +66,32 @@ router.get("/:id", authMiddleware, async (req, res) => {
   } catch (err) {
     console.error("Error obteniendo detalle:", err);
     return res.status(500).json({ error: "Error al obtener detalle" });
+  }
+});
+
+/**
+ * DELETE /api/historial/:id
+ */
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const [result] = await pool.query(
+      "DELETE FROM historial WHERE id = ? AND user_id = ?",
+      [id, userId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res
+        .status(404)
+        .json({ error: "Registro no encontrado o no pertenece al usuario" });
+    }
+
+    return res.json({ message: "Registro eliminado correctamente" });
+  } catch (err) {
+    console.error("Error eliminando historial:", err);
+    return res.status(500).json({ error: "Error al eliminar historial" });
   }
 });
 

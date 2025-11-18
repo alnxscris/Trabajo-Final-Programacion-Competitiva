@@ -41,7 +41,7 @@ export default function HistorialDetallePage() {
       return;
     }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/historial/${id}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/historial/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (res) => {

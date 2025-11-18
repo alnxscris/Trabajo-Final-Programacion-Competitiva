@@ -39,7 +39,8 @@ vector<int> buildLPS(const string& P) {
     while (i < m) {
         if (P[i] == P[len]) {
             lps[i++] = ++len;
-        } else {
+        }
+        else {
             if (len != 0) len = lps[len - 1];
             else lps[i++] = 0;
         }
@@ -62,7 +63,8 @@ vector<int> MetodoKMP(const string& T, const string& P) {
                 ans.push_back(i - j);
                 j = lps[j - 1];
             }
-        } else {
+        }
+        else {
             if (j != 0) j = lps[j - 1];
             else i++;
         }
@@ -72,32 +74,19 @@ vector<int> MetodoKMP(const string& T, const string& P) {
 
 int main(int argc, char* argv[]) {
 
-    if (argc < 2) {
+    // Debe haber: argv[1] = patron, argv[2...] = cadenas
+    if (argc < 3) {
         cout << "" << endl;
         return 0;
     }
 
-    string input = argv[1];
+    string patron = argv[1];
 
-    // Separar por "|"
-    vector<string> partes;
-    string temp;
-    stringstream ss(input);
+    // Procesar cada cadena enviada como argumento
+    for (int i = 2; i < argc; i++) {
 
-    while (getline(ss, temp, '|')) {
-        partes.push_back(temp);
-    }
-
-    if (partes.size() < 2) {
-        cout << "" << endl;
-        return 0;
-    }
-
-    string patron = partes[0];
-
-    // Procesar cada cadena y mostrar resultados
-    for (int i = 1; i < partes.size(); i++) {
-        vector<int> res = MetodoKMP(partes[i], patron);
+        string cadena = argv[i];
+        vector<int> res = MetodoKMP(cadena, patron);
 
         if (res.empty()) cout << "-1";
         else {
@@ -107,7 +96,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        if (i < partes.size() - 1) cout << "|";
+        if (i < argc - 1) cout << "|";  // separador entre resultados
     }
 
     return 0;
