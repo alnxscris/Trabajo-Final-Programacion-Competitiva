@@ -24,8 +24,7 @@ export async function ejecutarBusqueda(secuencias, patron) {
         const nombre = item.nombre || item.Name || item.NOMBRE;
         const cadena = item.cadena || item.Sequence || item.SECUENCIA;
 
-        // Ejecutar KMP para esta cadena
-        const salida = await ejecutarKMP(cadena, patron);
+        const salida = await ejecutarKMP(patron, cadena);
 
         resultados.push({
             nombre,

@@ -1,5 +1,5 @@
 import pool from "../config/db.js";
-import runExecutable from "../utils/runExecutable.js";
+import { ejecutarKMP } from "../utils/runExecutable.js";
 
 /**
  * Archivo: controllers/search.controller.js
@@ -65,7 +65,6 @@ import runExecutable from "../utils/runExecutable.js";
  *   - Interactúa directamente con el algoritmo KMP implementado en C++.
  */
 
-
 export async function ejecutarBusqueda(req, res) {
   try {
     const userId = req.user.id;
@@ -78,7 +77,7 @@ export async function ejecutarBusqueda(req, res) {
     // 1. Convertir Buffer -> texto
     const contenido = req.file.buffer.toString("utf-8");
 
-    // 2. Dividir líneas
+    // 2. Dividir líneas y limpiar
     const lineas = contenido
       .split(/\r?\n/)
       .map(l => l.trim())
@@ -86,7 +85,7 @@ export async function ejecutarBusqueda(req, res) {
 
     // 3. Extraer columnas (nombre, cadena)
     const secuencias = lineas
-      .slice(1) // <--- SALTA LA FILA 1 DEL CSV
+      .slice(1)
       .map((fila) => {
         const partes = fila.split(/[;,]/).map(x => x.trim());
         return {
@@ -95,21 +94,22 @@ export async function ejecutarBusqueda(req, res) {
         };
       });
 
+    // 4. Ejecutar KMP por cada cadena individualmente
+    const resultados = [];
 
-    // 4. Extraer solo cadenas para enviarlas al exe
-    const soloCadenas = secuencias.map(s => s.cadena);
+    for (const item of secuencias) {
+      const salida = await ejecutarKMP(patron, item.cadena);
 
-    // 5. Ejecutar .exe
-    const salida = await runExecutable(patron, soloCadenas);
+      resultados.push({
+        nombre: item.nombre,
+        cadena: item.cadena,
+        coincidencias: salida === "" || salida === "-1"
+          ? "Sin coincidencia"
+          : salida,
+      });
+    }
 
-    // 6. Transformar salida string -> array JSON
-    const resultados = salida.split("|").map((c, i) => ({
-      nombre: secuencias[i].nombre,
-      cadena: secuencias[i].cadena,
-      coincidencias: c === "-1" ? "Sin coincidencia" : c,
-    }));
-
-    // 7. Guardar historial
+    // 5. Guardar historial
     await pool.query(
       "INSERT INTO historial (fecha, patron, archivo, resultados, user_id) VALUES (NOW(), ?, ?, ?, ?)",
       [patron, archivo, JSON.stringify(resultados), userId]

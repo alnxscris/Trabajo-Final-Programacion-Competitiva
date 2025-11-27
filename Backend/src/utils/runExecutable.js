@@ -1,11 +1,11 @@
 import { execFile } from "child_process";
 import path from "path";
 
-export default function runExecutable(patron, cadenas) {
+export function ejecutarKMP(patron, cadena) {
   return new Promise((resolve, reject) => {
     const exePath = path.join(process.cwd(), "exe", "KMP.exe");
 
-    const args = [patron, ...cadenas];
+    const args = [patron, cadena];
 
     execFile(exePath, args, (error, stdout) => {
       if (error) {
